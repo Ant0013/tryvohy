@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Тривоги в робочі години</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=Commissioner:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#f6f3f2; --surface:#fffdfd; --line:#e3dad8; --line-soft:#efe8e6;
+  --ink:#241d1c; --muted:#7b6d6a; --faint:#a3948f;
+  --city:#b02a20; --city-soft:#b02a2022;
+  --obl:#e08a72; --obl-soft:#e08a7226;
+  --calm:#eef1ea; --calm-ink:#5d6b52;
+  --shadow:0 1px 2px rgba(60,35,30,.06),0 8px 24px rgba(60,35,30,.05);
+}
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]){
+  --bg:#171313; --surface:#201a1a; --line:#3a2f2e; --line-soft:#2b2323;
+  --ink:#f1e9e7; --muted:#a4938f; --faint:#7c6a66;
+  --city:#e2564a; --city-soft:#e2564a26;
+  --obl:#c9765d; --obl-soft:#c9765d2b;
+  --calm:#232a20; --calm-ink:#93a683;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+ }
+}
+:root[data-theme="dark"]{
+  --bg:#171313; --surface:#201a1a; --line:#3a2f2e; --line-soft:#2b2323;
+  --ink:#f1e9e7; --muted:#a4938f; --faint:#7c6a66;
+  --city:#e2564a; --city-soft:#e2564a26;
+  --obl:#c9765d; --obl-soft:#c9765d2b;
+  --calm:#232a20; --calm-ink:#93a683;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Commissioner",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 24px 72px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:8px}
+h1{font-family:"Bitter",Georgia,serif;font-weight:700;font-size:clamp(26px,3.6vw,38px);
+   line-height:1.15;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:8px 0 0;max-width:60ch}
+.range{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:13px;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:18px;align-items:center;margin:26px 0 14px;
+  font-size:13px;color:var(--muted)}
+.key{display:flex;align-items:center;gap:8px}
+.sw{width:22px;height:12px;border-radius:2px;flex:none}
+.sw.city{background:var(--city)}
+.sw.obl{background:var(--obl)}
+.sw.calm{background:var(--calm);border:1px solid var(--line)}
+.sw.unk{background:repeating-linear-gradient(45deg,var(--line-soft),var(--line-soft) 3px,transparent 3px,transparent 6px);border:1px solid var(--line)}
+.board{background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  box-shadow:var(--shadow);overflow-x:auto;padding-bottom:10px}
+.grid{display:grid;grid-template-columns:62px repeat(6,minmax(140px,1fr));min-width:920px}
+.corner{border-bottom:1px solid var(--line);border-right:1px solid var(--line)}
+.dayhead{border-bottom:1px solid var(--line);border-right:1px solid var(--line-soft);
+  padding:12px 12px 10px;text-align:center}
+.dayhead:last-child{border-right:none}
+.dow{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--faint)}
+.dnum{font-family:"Bitter",Georgia,serif;font-weight:500;font-size:17px;margin-top:2px}
+.dtot{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);margin-top:6px;
+  font-variant-numeric:tabular-nums}
+.dtot.zero{color:var(--calm-ink)}
+.tots{margin-top:8px;display:flex;flex-direction:column;gap:2px;align-items:center;
+  font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.tots .all{font-size:13px;font-weight:500;color:var(--ink);letter-spacing:-.01em}
+.tots .all.zero{color:var(--calm-ink);font-weight:400}
+.tots .alllab{font-size:9.5px;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);
+  font-family:"Commissioner",sans-serif;margin-bottom:-1px}
+.tots .row{font-size:11px;color:var(--muted);display:flex;gap:5px;align-items:center}
+.tots .dot{width:7px;height:7px;border-radius:2px;flex:none}
+.tots .dot.c{background:var(--city)} .tots .dot.o{background:var(--obl)}
+.tots .rule{width:60%;height:1px;background:var(--line);margin:4px 0 3px}
+.axis{border-right:1px solid var(--line);position:relative}
+.col{border-right:1px solid var(--line-soft);position:relative}
+.col:last-child{border-right:none}
+.hr{position:absolute;left:0;right:0;border-top:1px solid var(--line-soft)}
+.hr.solid{border-top-color:var(--line)}
+.tick{position:absolute;right:8px;transform:translateY(-50%);
+  font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--faint);
+  font-variant-numeric:tabular-nums}
+.lane{position:absolute;top:0;bottom:0}
+.lane.c{left:6%;width:42%}
+.lane.o{left:52%;width:42%}
+.blk{position:absolute;left:0;right:0;border-radius:3px;overflow:hidden;
+  display:flex;align-items:flex-start;justify-content:center;padding-top:2px}
+.blk.c{background:var(--city)}
+.blk.o{background:var(--obl)}
+.blk span{font-family:"IBM Plex Mono",monospace;font-size:9.5px;color:#fff;opacity:.92;
+  letter-spacing:-.02em;white-space:nowrap}
+.blk.open-top{border-top-left-radius:0;border-top-right-radius:0;
+  box-shadow:inset 0 3px 0 rgba(255,255,255,.35)}
+.blk.open-bot{border-bottom-left-radius:0;border-bottom-right-radius:0;
+  box-shadow:inset 0 -3px 0 rgba(255,255,255,.35)}
+.blk.open-top.open-bot{box-shadow:inset 0 3px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(255,255,255,.35)}
+.unknown{position:absolute;top:0;bottom:0;left:0;right:0;
+  background:repeating-linear-gradient(45deg,var(--line-soft),var(--line-soft) 4px,transparent 4px,transparent 8px)}
+.start{position:absolute;left:0;right:0;height:2px;background:var(--obl);opacity:.85}
+.calmnote{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);
+  text-align:center;font-size:11.5px;color:var(--calm-ink);letter-spacing:.02em}
+.notes{margin-top:28px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.note{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.note h3{font-family:"Bitter",Georgia,serif;font-size:14px;font-weight:500;margin:0 0 6px}
+.note p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55}
+.note a{color:var(--city)}
+table.sum{width:100%;border-collapse:collapse;margin-top:26px;font-size:13.5px}
+table.sum th,table.sum td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-soft)}
+table.sum th{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);font-weight:500}
+table.sum td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.bar{display:inline-block;height:8px;border-radius:2px;vertical-align:middle;margin-right:8px}
+.bar.c{background:var(--city)} .bar.o{background:var(--obl)}
+footer{margin-top:34px;font-size:12.5px;color:var(--faint)}
+</style>
+<div class="wrap">
+<header>
+ <div>
+  <h1>Коли була тривога в робочі години</h1>
+  <p class="sub">Місто Київ і Бучанський район. 26 серпня – 1 вересня, вікно 09:00–19:00 за київським часом.</p>
+ </div>
+ <div class="range">09:00 – 19:00 · Europe/Kyiv</div>
+</header>
+
+<div class="legend">
+ <div class="key"><span class="sw city"></span> тривога в місті Київ</div>
+ <div class="key"><span class="sw obl"></span> тривога в Бучанському районі</div>
+ <div class="key"><span class="sw calm"></span> тиша у вікні</div>
+ <div class="key"><span class="sw unk"></span> дані неповні: тривога починалась, час відбою невідомий (тонкі риски)</div>
+ <div class="key">світла смужка зверху або знизу блока — тривога почалась до 09:00 або тривала після 19:00</div>
+</div>
+
+<div class="board"><div class="grid" id="grid"></div></div>
+
+<table class="sum" id="sum"></table>
+
+<div class="notes">
+ <div class="note"><h3>Звідки цифри</h3><p>24–28 серпня — офіційний датасет тривог, точність до хвилини. 31 серпня по місту — дзеркало офіційних сповіщень у Telegram: на днях, де є обидва джерела, воно збігається з офіційним хвилина в хвилину, тож місту можна вірити так само.</p></div>
+ <div class="note"><h3>Чому 31 серпня по району неповне</h3><p>Офіційний датасет застряг на 29 серпня — з 30-го офіційний канал не публікує повідомлення через технічні причини. По Бучанському району за 31-ше вдалось дістати лише моменти початку тривог (тонкі риски о 09:08, 15:53 і 18:41), відбоїв ніхто не публікує. Тому за цей день район у підрахунок не входить, а «разом» позначено як «від».</p></div>
+ <div class="note"><h3>Чому саме Бучанський район</h3><p>Тривогу в області оголошують не на всю область, а по кожному району окремо. Тут рахується Бучанський район — тривоги в Броварах чи Білій Церкві до вас не доходять і в підрахунок не йдуть.</p></div>
+</div>
+
+<footer>Час київський (UTC+3). Джерела зберігають мітки в UTC — тут вони вже переведені.</footer>
+</div>
+<script>
+const DAYS = [{"key": "2026-08-26", "dow": "Середа", "date": "26 серпня", "city": [], "obl": [], "oblPartial": false, "oblStarts": []}, {"key": "2026-08-27", "dow": "Четвер", "date": "27 серпня", "city": [{"a": 540, "b": 579, "ca": true, "cb": false, "ra": "08:13", "rb": "09:39"}, {"a": 594, "b": 668, "ca": false, "cb": false, "ra": "09:54", "rb": "11:08"}, {"a": 682, "b": 695, "ca": false, "cb": false, "ra": "11:22", "rb": "11:35"}, {"a": 718, "b": 762, "ca": false, "cb": false, "ra": "11:58", "rb": "12:42"}, {"a": 885, "b": 973, "ca": false, "cb": false, "ra": "14:45", "rb": "16:13"}, {"a": 988, "b": 1010, "ca": false, "cb": false, "ra": "16:28", "rb": "16:50"}, {"a": 1026, "b": 1050, "ca": false, "cb": false, "ra": "17:06", "rb": "17:30"}, {"a": 1071, "b": 1140, "ca": false, "cb": true, "ra": "17:51", "rb": "21:11"}], "obl": [{"a": 540, "b": 580, "ca": true, "cb": false, "ra": "08:48", "rb": "09:40"}, {"a": 595, "b": 669, "ca": false, "cb": false, "ra": "09:55", "rb": "11:09"}, {"a": 719, "b": 762, "ca": false, "cb": false, "ra": "11:59", "rb": "12:42"}, {"a": 881, "b": 1051, "ca": false, "cb": false, "ra": "14:41", "rb": "17:31"}, {"a": 1117, "b": 1140, "ca": false, "cb": true, "ra": "18:37", "rb": "21:52"}], "oblPartial": false, "oblStarts": []}, {"key": "2026-08-28", "dow": "Пʼятниця", "date": "28 серпня", "city": [{"a": 557, "b": 576, "ca": false, "cb": false, "ra": "09:17", "rb": "09:36"}, {"a": 605, "b": 627, "ca": false, "cb": false, "ra": "10:05", "rb": "10:27"}, {"a": 656, "b": 701, "ca": false, "cb": false, "ra": "10:56", "rb": "11:41"}, {"a": 857, "b": 887, "ca": false, "cb": false, "ra": "14:17", "rb": "14:47"}, {"a": 1005, "b": 1140, "ca": false, "cb": true, "ra": "16:45", "rb": "19:09"}], "obl": [{"a": 556, "b": 576, "ca": false, "cb": false, "ra": "09:16", "rb": "09:36"}, {"a": 600, "b": 702, "ca": false, "cb": false, "ra": "10:00", "rb": "11:42"}, {"a": 851, "b": 887, "ca": false, "cb": false, "ra": "14:11", "rb": "14:47"}, {"a": 1009, "b": 1140, "ca": false, "cb": true, "ra": "16:49", "rb": "19:16"}], "oblPartial": false, "oblStarts": []}, {"key": "2026-08-31", "dow": "Понеділок", "date": "31 серпня", "city": [{"a": 545, "b": 601, "ca": false, "cb": false, "ra": "09:05", "rb": "10:01"}, {"a": 613, "b": 619, "ca": false, "cb": false, "ra": "10:13", "rb": "10:19"}, {"a": 704, "b": 745, "ca": false, "cb": false, "ra": "11:44", "rb": "12:25"}, {"a": 816, "b": 822, "ca": false, "cb": false, "ra": "13:36", "rb": "13:42"}, {"a": 958, "b": 971, "ca": false, "cb": false, "ra": "15:58", "rb": "16:11"}, {"a": 1124, "b": 1130, "ca": false, "cb": false, "ra": "18:44", "rb": "18:50"}], "obl": [], "oblPartial": true, "oblStarts": [548]}, {"key": "2026-09-01", "dow": "Вівторок", "date": "1 вересня", "city": [{"a": 589, "b": 635, "ca": false, "cb": false, "ra": "09:49", "rb": "10:35"}, {"a": 950, "b": 955, "ca": false, "cb": false, "ra": "15:50", "rb": "15:55"}, {"a": 1057, "b": 1087, "ca": false, "cb": false, "ra": "17:37", "rb": "18:07"}, {"a": 1104, "b": 1140, "ca": false, "cb": true, "ra": "18:24", "rb": "19:21"}], "obl": [], "oblPartial": true, "oblStarts": [582, 1041]}];
+const W0=540, W1=1140, PXH=44;
+const H=(W1-W0)/60*PXH;
+const fmt=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const dur=m=>{const h=Math.floor(m/60),x=m%60;return h?(x?h+" год "+x+" хв":h+" год"):x+" хв";};
+const union=bs=>{
+  // «по максимуму»: тривога хоч у місті, хоч в області — інтервали склеюються
+  const iv=bs.map(b=>[b.a,b.b]).sort((x,y)=>x[0]-y[0]); let t=0,cs=null,ce=null;
+  iv.forEach(([a,b])=>{ if(cs===null){cs=a;ce=b;} else if(a<=ce){ce=Math.max(ce,b);} else {t+=ce-cs;cs=a;ce=b;} });
+  return cs===null?0:t+ce-cs;
+};
+const g=document.getElementById("grid");
+// кількість колонок задаємо з даних: жорстке «6» ламало розкладку на іншій кількості днів
+g.style.gridTemplateColumns='62px repeat('+DAYS.length+',minmax(140px,1fr))';
+g.style.minWidth=(62+DAYS.length*150)+'px';
+
+g.insertAdjacentHTML("beforeend",'<div class="corner"></div>');
+DAYS.forEach(d=>{
+  const cm=d.city.reduce((s,b)=>s+b.b-b.a,0);
+  const om=d.obl.reduce((s,b)=>s+b.b-b.a,0);
+  const um=union([...d.city,...d.obl]);
+  const pre=d.oblPartial?"від ":"";
+  const rn=d.oblPartial&&!om?'невідомо':(om?pre+dur(om):'—');
+  const tots=(cm||om||d.oblPartial)
+    ? '<div class="alllab">разом</div><div class="all">'+pre+dur(um)+'</div>'+
+      '<div class="rule"></div>'+
+      '<div class="row"><span class="dot c"></span>Київ '+(cm?dur(cm):'—')+'</div>'+
+      '<div class="row" title="Бучанський район"><span class="dot o"></span>р-н '+rn+'</div>'
+    : '<div class="all zero">тиша</div>';
+  g.insertAdjacentHTML("beforeend",
+   '<div class="dayhead"><div class="dow">'+d.dow+'</div><div class="dnum">'+d.date+
+   '</div><div class="tots">'+tots+'</div></div>');
+});
+
+let axis='<div class="axis" style="height:'+H+'px">';
+for(let m=W0;m<=W1;m+=60){
+  const y=(m-W0)/60*PXH;
+  axis+='<div class="tick" style="top:'+y+'px">'+fmt(m)+'</div>';
+}
+axis+='</div>';
+g.insertAdjacentHTML("beforeend",axis);
+
+DAYS.forEach(d=>{
+  let h='<div class="col" style="height:'+H+'px">';
+  for(let m=W0+60;m<W1;m+=60) h+='<div class="hr" style="top:'+((m-W0)/60*PXH)+'px"></div>';
+  const put=(b,cls)=>{
+    const top=(b.a-W0)/60*PXH, ht=Math.max((b.b-b.a)/60*PXH,3);
+    const label=ht>=16?'<span>'+fmt(b.a)+'</span>':'';
+    return '<div class="blk '+cls+(b.ca?' open-top':'')+(b.cb?' open-bot':'')+
+      '" style="top:'+top+'px;height:'+ht+'px" title="'+(cls==='c'?'Київ':'Область')+
+      ' · '+b.ra+'–'+b.rb+'">'+label+'</div>';
+  };
+  h+='<div class="lane c">'+d.city.map(b=>put(b,"c")).join("")+'</div>';
+  h+='<div class="lane o">'+(d.oblPartial?'<div class="unknown" title="Дані по області за цей день неповні"></div>':'')+
+     d.obl.map(b=>put(b,"o")).join("")+
+     d.oblStarts.map(m=>'<div class="start" style="top:'+((m-W0)/60*PXH)+'px" title="Тривога в області о '+fmt(m)+' — час відбою невідомий"></div>').join("")+'</div>';
+  if(!d.city.length && !d.obl.length && !d.oblPartial)
+    h+='<div class="calmnote">без тривог</div>';
+  h+='</div>';
+  g.insertAdjacentHTML("beforeend",h);
+});
+
+let t='<thead><tr><th>День</th><th>Разом, по максимуму</th><th>Тривога в Києві</th><th>Тривога в Бучанському районі</th><th>Найдовший безперервний відрізок тиші</th></tr></thead><tbody>';
+DAYS.forEach(d=>{
+  const cm=d.city.reduce((s,b)=>s+b.b-b.a,0);
+  const om=d.obl.reduce((s,b)=>s+b.b-b.a,0);
+  const merged=[...d.city,...d.obl].sort((x,y)=>x.a-y.a);
+  let cur=W0,best=0,bs=W0;
+  merged.forEach(b=>{ if(b.a>cur && b.a-cur>best){best=b.a-cur;bs=cur;} cur=Math.max(cur,b.b); });
+  if(W1-cur>best){best=W1-cur;bs=cur;}
+  const w=x=>Math.round(x/600*90);
+  const um=union([...d.city,...d.obl]);
+  t+='<tr><td>'+d.dow.toLowerCase()+', '+d.date+'</td>'+
+     '<td class="n"><strong>'+(um?(d.oblPartial?'від ':'')+dur(um):'—')+'</strong></td>'+
+     '<td class="n"><span class="bar c" style="width:'+w(cm)+'px"></span>'+(cm?dur(cm):'—')+'</td>'+
+     '<td class="n"><span class="bar o" style="width:'+w(om)+'px"></span>'+(om?(d.oblPartial?'від ':'')+dur(om):(d.oblPartial?'невідомо':'—'))+'</td>'+
+     '<td class="n">'+(d.oblPartial?'до ':'')+dur(best)+' ('+fmt(bs)+'–'+fmt(bs+best)+')</td></tr>';
+});
+document.getElementById("sum").innerHTML=t+'</tbody>';
+document.body.setAttribute("data-h", document.documentElement.scrollHeight);
+</script>
+</html>
