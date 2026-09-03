@@ -86,6 +86,7 @@ h1{font-family:"Bitter",Georgia,serif;font-weight:700;font-size:clamp(26px,3.6vw
   font-variant-numeric:tabular-nums}
 .lane{position:absolute;top:0;bottom:0}
 .lane.c{left:6%;width:42%}
+.lane.o.approx .blk{border-style:dashed}
 .lane.o{left:52%;width:42%}
 .blk{position:absolute;left:0;right:0;border-radius:3px;overflow:hidden;
   display:flex;align-items:flex-start;justify-content:center;padding-top:2px}
@@ -120,7 +121,7 @@ footer{margin-top:34px;font-size:12.5px;color:var(--faint)}
 <header>
  <div>
   <h1>Коли була тривога в робочі години</h1>
-  <p class="sub">Місто Київ і Бучанський район. 27 серпня – 2 вересня, вікно 09:00–19:00 за київським часом.</p>
+  <p class="sub">Місто Київ і Бучанський район. 28 серпня – 3 вересня, вікно 09:00–19:00 за київським часом.</p>
  </div>
  <div class="range">09:00 – 19:00 · Europe/Kyiv</div>
 </header>
@@ -129,7 +130,7 @@ footer{margin-top:34px;font-size:12.5px;color:var(--faint)}
  <div class="key"><span class="sw city"></span> тривога в місті Київ</div>
  <div class="key"><span class="sw obl"></span> тривога в Бучанському районі</div>
  <div class="key"><span class="sw calm"></span> тиша у вікні</div>
- <div class="key"><span class="sw unk"></span> дані неповні: тривога починалась, час відбою невідомий (тонкі риски)</div>
+ <div class="key"><span class="sw obl approx-sw"></span> «до …» — за цей день по району даних немає, показано тривогу по всій Київській області (верхня межа)</div>
  <div class="key">світла смужка зверху або знизу блока — тривога почалась до 09:00 або тривала після 19:00</div>
 </div>
 
@@ -138,15 +139,15 @@ footer{margin-top:34px;font-size:12.5px;color:var(--faint)}
 <table class="sum" id="sum"></table>
 
 <div class="notes">
- <div class="note"><h3>Звідки цифри</h3><p>24–28 серпня — офіційний датасет тривог, точність до хвилини. 31 серпня по місту — дзеркало офіційних сповіщень у Telegram: на днях, де є обидва джерела, воно збігається з офіційним хвилина в хвилину, тож місту можна вірити так само.</p></div>
- <div class="note"><h3>Чому 31 серпня по району неповне</h3><p>Офіційний датасет застряг на 29 серпня — з 30-го офіційний канал не публікує повідомлення через технічні причини. По Бучанському району за 31-ше вдалось дістати лише моменти початку тривог (тонкі риски о 09:08, 15:53 і 18:41), відбоїв ніхто не публікує. Тому за цей день район у підрахунок не входить, а «разом» позначено як «від».</p></div>
+ <div class="note"><h3>Звідки цифри</h3><p>Основа — офіційний датасет тривог, точність до хвилини. Там, де він мовчить, місто береться з дзеркала офіційних сповіщень у Telegram: на днях, де є обидва джерела, воно збігається хвилина в хвилину, тож місту можна вірити так само.</p></div>
+ <div class="note"><h3>Що означає «до»</h3><p>З 29 серпня по 2 вересня офіційний канал тривог не публікував нічого — п'ять діб поспіль. За ці дні по району окремих даних не існує: єдине джерело оголошує відбій на всю Київську область одразу. Тому район за такі дні — це час по області, тобто <b>верхня межа</b>: реальний час у Бучанському районі такий самий або менший. На дні, де є обидва джерела, область завищувала район приблизно на третину (28 серпня: область 6 год 35 хв проти району 4 год 48 хв).</p></div>
  <div class="note"><h3>Чому саме Бучанський район</h3><p>Тривогу в області оголошують не на всю область, а по кожному району окремо. Тут рахується Бучанський район — тривоги в Броварах чи Білій Церкві до вас не доходять і в підрахунок не йдуть.</p></div>
 </div>
 
 <footer>Час київський (UTC+3). Джерела зберігають мітки в UTC — тут вони вже переведені.</footer>
 </div>
 <script>
-const DAYS = [{"key": "2026-08-27", "dow": "Четвер", "date": "27 серпня", "city": [{"a": 540, "b": 579, "ca": true, "cb": false, "ra": "08:13", "rb": "09:39"}, {"a": 594, "b": 668, "ca": false, "cb": false, "ra": "09:54", "rb": "11:08"}, {"a": 682, "b": 695, "ca": false, "cb": false, "ra": "11:22", "rb": "11:35"}, {"a": 718, "b": 762, "ca": false, "cb": false, "ra": "11:58", "rb": "12:42"}, {"a": 885, "b": 973, "ca": false, "cb": false, "ra": "14:45", "rb": "16:13"}, {"a": 988, "b": 1010, "ca": false, "cb": false, "ra": "16:28", "rb": "16:50"}, {"a": 1026, "b": 1050, "ca": false, "cb": false, "ra": "17:06", "rb": "17:30"}, {"a": 1071, "b": 1140, "ca": false, "cb": true, "ra": "17:51", "rb": "21:11"}], "obl": [{"a": 540, "b": 580, "ca": true, "cb": false, "ra": "08:48", "rb": "09:40"}, {"a": 595, "b": 669, "ca": false, "cb": false, "ra": "09:55", "rb": "11:09"}, {"a": 719, "b": 762, "ca": false, "cb": false, "ra": "11:59", "rb": "12:42"}, {"a": 881, "b": 1051, "ca": false, "cb": false, "ra": "14:41", "rb": "17:31"}, {"a": 1117, "b": 1140, "ca": false, "cb": true, "ra": "18:37", "rb": "21:52"}], "oblPartial": false, "oblStarts": []}, {"key": "2026-08-28", "dow": "Пʼятниця", "date": "28 серпня", "city": [{"a": 557, "b": 576, "ca": false, "cb": false, "ra": "09:17", "rb": "09:36"}, {"a": 605, "b": 627, "ca": false, "cb": false, "ra": "10:05", "rb": "10:27"}, {"a": 656, "b": 701, "ca": false, "cb": false, "ra": "10:56", "rb": "11:41"}, {"a": 857, "b": 887, "ca": false, "cb": false, "ra": "14:17", "rb": "14:47"}, {"a": 1005, "b": 1140, "ca": false, "cb": true, "ra": "16:45", "rb": "19:09"}], "obl": [{"a": 556, "b": 576, "ca": false, "cb": false, "ra": "09:16", "rb": "09:36"}, {"a": 600, "b": 702, "ca": false, "cb": false, "ra": "10:00", "rb": "11:42"}, {"a": 851, "b": 887, "ca": false, "cb": false, "ra": "14:11", "rb": "14:47"}, {"a": 1009, "b": 1140, "ca": false, "cb": true, "ra": "16:49", "rb": "19:16"}], "oblPartial": false, "oblStarts": []}, {"key": "2026-08-31", "dow": "Понеділок", "date": "31 серпня", "city": [{"a": 545, "b": 601, "ca": false, "cb": false, "ra": "09:05", "rb": "10:01"}, {"a": 613, "b": 619, "ca": false, "cb": false, "ra": "10:13", "rb": "10:19"}, {"a": 704, "b": 745, "ca": false, "cb": false, "ra": "11:44", "rb": "12:25"}, {"a": 816, "b": 822, "ca": false, "cb": false, "ra": "13:36", "rb": "13:42"}, {"a": 958, "b": 971, "ca": false, "cb": false, "ra": "15:58", "rb": "16:11"}, {"a": 1124, "b": 1130, "ca": false, "cb": false, "ra": "18:44", "rb": "18:50"}], "obl": [], "oblPartial": true, "oblStarts": [548]}, {"key": "2026-09-01", "dow": "Вівторок", "date": "1 вересня", "city": [{"a": 589, "b": 635, "ca": false, "cb": false, "ra": "09:49", "rb": "10:35"}, {"a": 950, "b": 955, "ca": false, "cb": false, "ra": "15:50", "rb": "15:55"}, {"a": 1057, "b": 1087, "ca": false, "cb": false, "ra": "17:37", "rb": "18:07"}, {"a": 1104, "b": 1140, "ca": false, "cb": true, "ra": "18:24", "rb": "19:21"}], "obl": [], "oblPartial": true, "oblStarts": [582]}, {"key": "2026-09-02", "dow": "Середа", "date": "2 вересня", "city": [{"a": 540, "b": 559, "ca": true, "cb": false, "ra": "07:13", "rb": "09:19"}, {"a": 609, "b": 646, "ca": false, "cb": false, "ra": "10:09", "rb": "10:46"}, {"a": 724, "b": 733, "ca": false, "cb": false, "ra": "12:04", "rb": "12:13"}, {"a": 750, "b": 813, "ca": false, "cb": false, "ra": "12:30", "rb": "13:33"}, {"a": 894, "b": 898, "ca": false, "cb": false, "ra": "14:54", "rb": "14:58"}, {"a": 922, "b": 965, "ca": false, "cb": false, "ra": "15:22", "rb": "16:05"}], "obl": [], "oblPartial": true, "oblStarts": []}];
+const DAYS = [{"key": "2026-08-28", "dow": "Пʼятниця", "date": "28 серпня", "city": [{"a": 557, "b": 576, "ca": false, "cb": false, "ra": "09:17", "rb": "09:36"}, {"a": 605, "b": 627, "ca": false, "cb": false, "ra": "10:05", "rb": "10:27"}, {"a": 656, "b": 701, "ca": false, "cb": false, "ra": "10:56", "rb": "11:41"}, {"a": 857, "b": 887, "ca": false, "cb": false, "ra": "14:17", "rb": "14:47"}, {"a": 1005, "b": 1140, "ca": false, "cb": true, "ra": "16:45", "rb": "19:09"}], "obl": [{"a": 556, "b": 576, "ca": false, "cb": false, "ra": "09:16", "rb": "09:36"}, {"a": 600, "b": 702, "ca": false, "cb": false, "ra": "10:00", "rb": "11:42"}, {"a": 851, "b": 887, "ca": false, "cb": false, "ra": "14:11", "rb": "14:47"}, {"a": 1009, "b": 1140, "ca": false, "cb": true, "ra": "16:49", "rb": "19:16"}], "oblApprox": false}, {"key": "2026-08-31", "dow": "Понеділок", "date": "31 серпня", "city": [{"a": 545, "b": 601, "ca": false, "cb": false, "ra": "09:05", "rb": "10:01"}, {"a": 613, "b": 619, "ca": false, "cb": false, "ra": "10:13", "rb": "10:19"}, {"a": 704, "b": 745, "ca": false, "cb": false, "ra": "11:44", "rb": "12:25"}, {"a": 816, "b": 822, "ca": false, "cb": false, "ra": "13:36", "rb": "13:42"}, {"a": 958, "b": 971, "ca": false, "cb": false, "ra": "15:58", "rb": "16:11"}, {"a": 1124, "b": 1130, "ca": false, "cb": false, "ra": "18:44", "rb": "18:50"}], "obl": [{"a": 540, "b": 619, "ca": true, "cb": false, "ra": "07:41", "rb": "10:19"}, {"a": 680, "b": 746, "ca": false, "cb": false, "ra": "11:20", "rb": "12:26"}, {"a": 799, "b": 822, "ca": false, "cb": false, "ra": "13:19", "rb": "13:42"}, {"a": 845, "b": 882, "ca": false, "cb": false, "ra": "14:05", "rb": "14:42"}, {"a": 919, "b": 972, "ca": false, "cb": false, "ra": "15:19", "rb": "16:12"}, {"a": 1072, "b": 1119, "ca": false, "cb": false, "ra": "17:52", "rb": "18:39"}, {"a": 1121, "b": 1130, "ca": false, "cb": false, "ra": "18:41", "rb": "18:50"}], "oblApprox": true}, {"key": "2026-09-01", "dow": "Вівторок", "date": "1 вересня", "city": [{"a": 589, "b": 635, "ca": false, "cb": false, "ra": "09:49", "rb": "10:35"}, {"a": 950, "b": 955, "ca": false, "cb": false, "ra": "15:50", "rb": "15:55"}, {"a": 1057, "b": 1087, "ca": false, "cb": false, "ra": "17:37", "rb": "18:07"}, {"a": 1104, "b": 1140, "ca": false, "cb": true, "ra": "18:24", "rb": "19:21"}], "obl": [{"a": 540, "b": 638, "ca": true, "cb": false, "ra": "07:43", "rb": "10:38"}, {"a": 896, "b": 979, "ca": false, "cb": false, "ra": "14:56", "rb": "16:19"}, {"a": 1033, "b": 1140, "ca": false, "cb": true, "ra": "17:13", "rb": "21:56"}], "oblApprox": true}, {"key": "2026-09-02", "dow": "Середа", "date": "2 вересня", "city": [{"a": 540, "b": 559, "ca": true, "cb": false, "ra": "07:13", "rb": "09:19"}, {"a": 609, "b": 646, "ca": false, "cb": false, "ra": "10:09", "rb": "10:46"}, {"a": 724, "b": 733, "ca": false, "cb": false, "ra": "12:04", "rb": "12:13"}, {"a": 750, "b": 813, "ca": false, "cb": false, "ra": "12:30", "rb": "13:33"}, {"a": 894, "b": 898, "ca": false, "cb": false, "ra": "14:54", "rb": "14:58"}, {"a": 922, "b": 965, "ca": false, "cb": false, "ra": "15:22", "rb": "16:05"}, {"a": 1101, "b": 1140, "ca": false, "cb": true, "ra": "18:21", "rb": "19:41"}], "obl": [{"a": 540, "b": 562, "ca": true, "cb": false, "ra": "06:54", "rb": "09:22"}, {"a": 580, "b": 647, "ca": false, "cb": false, "ra": "09:40", "rb": "10:47"}, {"a": 675, "b": 680, "ca": false, "cb": false, "ra": "11:15", "rb": "11:20"}, {"a": 714, "b": 814, "ca": false, "cb": false, "ra": "11:54", "rb": "13:34"}, {"a": 883, "b": 1140, "ca": false, "cb": true, "ra": "14:43", "rb": "19:42"}], "oblApprox": true}, {"key": "2026-09-03", "dow": "Четвер", "date": "3 вересня", "city": [{"a": 540, "b": 572, "ca": true, "cb": false, "ra": "08:12", "rb": "09:32"}, {"a": 658, "b": 860, "ca": false, "cb": false, "ra": "10:58", "rb": "14:20"}, {"a": 940, "b": 951, "ca": false, "cb": false, "ra": "15:40", "rb": "15:51"}], "obl": [{"a": 540, "b": 572, "ca": true, "cb": false, "ra": "04:21", "rb": "09:32"}, {"a": 644, "b": 859, "ca": false, "cb": false, "ra": "10:44", "rb": "14:19"}], "oblApprox": true}];
 const W0=540, W1=1140, PXH=44;
 const H=(W1-W0)/60*PXH;
 const fmt=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
@@ -167,9 +168,9 @@ DAYS.forEach(d=>{
   const cm=d.city.reduce((s,b)=>s+b.b-b.a,0);
   const om=d.obl.reduce((s,b)=>s+b.b-b.a,0);
   const um=union([...d.city,...d.obl]);
-  const pre=d.oblPartial?"від ":"";
-  const rn=d.oblPartial&&!om?'невідомо':(om?pre+dur(om):'—');
-  const tots=(cm||om||d.oblPartial)
+  const pre=d.oblApprox?"до ":"";
+  const rn=om?pre+dur(om):'—';
+  const tots=(cm||om)
     ? '<div class="alllab">разом</div><div class="all">'+pre+dur(um)+'</div>'+
       '<div class="rule"></div>'+
       '<div class="row"><span class="dot c"></span>Київ '+(cm?dur(cm):'—')+'</div>'+
@@ -199,10 +200,8 @@ DAYS.forEach(d=>{
       ' · '+b.ra+'–'+b.rb+'">'+label+'</div>';
   };
   h+='<div class="lane c">'+d.city.map(b=>put(b,"c")).join("")+'</div>';
-  h+='<div class="lane o">'+(d.oblPartial?'<div class="unknown" title="Дані по області за цей день неповні"></div>':'')+
-     d.obl.map(b=>put(b,"o")).join("")+
-     d.oblStarts.map(m=>'<div class="start" style="top:'+((m-W0)/60*PXH)+'px" title="Тривога в області о '+fmt(m)+' — час відбою невідомий"></div>').join("")+'</div>';
-  if(!d.city.length && !d.obl.length && !d.oblPartial)
+  h+='<div class="lane o'+(d.oblApprox?' approx':'')+'">'+d.obl.map(b=>put(b,"o")).join("")+'</div>';
+  if(!d.city.length && !d.obl.length)
     h+='<div class="calmnote">без тривог</div>';
   h+='</div>';
   g.insertAdjacentHTML("beforeend",h);
@@ -219,10 +218,10 @@ DAYS.forEach(d=>{
   const w=x=>Math.round(x/600*90);
   const um=union([...d.city,...d.obl]);
   t+='<tr><td>'+d.dow.toLowerCase()+', '+d.date+'</td>'+
-     '<td class="n"><strong>'+(um?(d.oblPartial?'від ':'')+dur(um):'—')+'</strong></td>'+
+     '<td class="n"><strong>'+(um?(d.oblApprox?'до ':'')+dur(um):'—')+'</strong></td>'+
      '<td class="n"><span class="bar c" style="width:'+w(cm)+'px"></span>'+(cm?dur(cm):'—')+'</td>'+
-     '<td class="n"><span class="bar o" style="width:'+w(om)+'px"></span>'+(om?(d.oblPartial?'від ':'')+dur(om):(d.oblPartial?'невідомо':'—'))+'</td>'+
-     '<td class="n">'+(d.oblPartial?'до ':'')+dur(best)+' ('+fmt(bs)+'–'+fmt(bs+best)+')</td></tr>';
+     '<td class="n"><span class="bar o" style="width:'+w(om)+'px"></span>'+(om?(d.oblApprox?'до ':'')+dur(om):'—')+'</td>'+
+     '<td class="n">'+(d.oblApprox?'до ':'')+dur(best)+' ('+fmt(bs)+'–'+fmt(bs+best)+')</td></tr>';
 });
 document.getElementById("sum").innerHTML=t+'</tbody>';
 document.body.setAttribute("data-h", document.documentElement.scrollHeight);
