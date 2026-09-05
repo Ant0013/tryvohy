@@ -254,7 +254,9 @@ if(WINDOW && DAYS.length>WINDOW){
   // відкриваємо сторінку на сьогоднішньому дні, а не на січні
   const toEnd=()=>{board.scrollLeft=board.scrollWidth;};
   toEnd();
-  window.addEventListener("load",toEnd);
+  // Якщо на момент першого рахунку ширини сторінка ще не розкладена (прихована
+  // вкладка, друк), колонки виходять мінімальні — після load переміряємо.
+  window.addEventListener("load",()=>{layout();toEnd();});
   window.addEventListener("resize",()=>{layout();toEnd();});
 }
 document.body.setAttribute("data-h", document.documentElement.scrollHeight);
